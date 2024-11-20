@@ -17,4 +17,40 @@ Use the file `can_startup.sh` from this folder on the Raspberry Pi 4 to activate
 
 # Installation of the Applications
 
+## Dependencies
+```
+sudo apt install python3-serial python3-can
+```
 
+## Install and start Eclipse Ankaios
+```
+sudo apt install podman
+curl -sfL https://github.com/eclipse-ankaios/ankaios/releases/latest/download/install.sh | bash -
+sudo systemctl enable ank-server
+sudo systemctl enable ank-agent
+sudo systemctl start ank-server
+sudo systemctl start ank-agent
+sudo reboot
+```
+
+## Build can_reader container
+```
+sudo su
+cd can_reader
+podman build . -t can_reader
+```
+
+Note that the `can_reader` will use the entry for `Vehicle.Cabin.Infotainment.Navigation.Volume` to send integer values 0 and 100 via Kuksa.
+
+
+## Build mqtt_reader container
+```
+sudo su
+cd mqtt_reader
+podman build . -t mqtt_reader
+```
+
+Note that the `mqtt_reader` will use the entry for `Vehicle.Cabin.Infotainment.Media.Volume` to send integer values 0 and 100 via Kuksa.
+
+## Update Eclipse Ankaios config
+Put the contents of the `state.yml` file to `/etc/ankaios/state.yaml`. Reboot.
