@@ -3,4 +3,4 @@
 	url = https://github.com/openocd-org/openocd.git
 [submodule "challenge-threadx-and-beyond"]
 	path = challenge-threadx-and-beyond
-	url = https://github.com/Eclipse-SDV-Hackathon-Chapter-Two/challenge-threadx-and-beyond.git
+	url = https://github.com/odlot/challenge-threadx-and-beyond.git
