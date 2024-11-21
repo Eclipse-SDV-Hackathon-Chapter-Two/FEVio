@@ -40,7 +40,7 @@ workloads:
             filterMask:
               - "desiredState"
               - "workloadStates"
-  Can_Reader:
+  Can_Transceiver:
     runtime: podman
     agent: agent_A
     restart: true
