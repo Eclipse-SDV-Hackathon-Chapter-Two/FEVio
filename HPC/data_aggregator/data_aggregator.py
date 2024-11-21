@@ -48,14 +48,14 @@ def send_player_scores(data):
     print(f"Received playerScores")
     with VSSClient(ipAddr, port) as client:
         client.set_current_values({
-            topic_name_player_one_score: Datapoint(data.score1),
+            topic_name_player_one_score: Datapoint(data["score1"]),
         })
-        print(f"Feeding {data.score1} to {topic_name_player_one_score}...")
+        print(f"Feeding {data["score1"]} to {topic_name_player_one_score}...")
         time.sleep(1)
         client.set_current_values({
-            topic_name_player_two_score: Datapoint(data.score2),
+            topic_name_player_two_score: Datapoint(data["score2"]),
         })
-        print(f"Feeding {data.score2} to {topic_name_player_two_score}...")
+        print(f"Feeding {data["score2"]} to {topic_name_player_two_score}...")
         time.sleep(1)
 
 # Handle paddle movement
