@@ -15,7 +15,12 @@ git submodule init
 git submodule update --recursive
 ```
 
-## OpenOCD
+## MXChip AZ3166
+
+As one alternative input device for the user to interact with the vehicle we use the MXChip AZ3166 IoT DevKit.
+A fork of the challenge repository has been created and network and MQTT have been implemented.
+
+### OpenOCD
 
 [OpenOCD](https://github.com/openocd-org/openocd) is used to flash the MXChip AZ3166.
 
@@ -26,6 +31,6 @@ make
 sudo make install 
 ```
 
-### Flashing
+#### Flashing
 
 To flash the MXChip AZ3166, use `challenge-threadx-and-beyond/MXChip/AZ3166/scripts/flash.sh`.
