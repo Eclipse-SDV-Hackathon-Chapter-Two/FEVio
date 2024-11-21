@@ -152,8 +152,8 @@ button:focus-visible {
 }
 
 .content {
-  width: 860px;
-  height: 420px;
+  width: 1280px;
+  height: 680px;
   display: flex;
 }
 
