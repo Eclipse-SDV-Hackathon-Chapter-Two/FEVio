@@ -21,11 +21,6 @@ socket.on('paddleMove', (data) => {
   }
 });
 
-/*function movePaddle(player, direction) {
-  const newY = (player === 1 ? paddle1Y : paddle2Y) + direction * 10; // Paddle speed
-  socket.emit('movePaddle', { player, y: newY });
-}*/
-
 document.querySelector('#app').innerHTML = `
 <div class="outerContent">
   <h1 id="message" class="gameMessage">Press any button to start the game</h1>
@@ -218,6 +213,27 @@ function keyUpHandler(e) {
   }
 }
 
+function drawField() {
+  // Draw middle line
+  ctx.beginPath();
+  ctx.setLineDash([10, 5]); // Dashed line
+  ctx.moveTo(canvas.width / 2, 0); // Start at the top middle
+  ctx.lineTo(canvas.width / 2, canvas.height); // Draw to the bottom middle
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.2)"; // Semi-transparent white
+  ctx.lineWidth = 5; // Line thickness
+  ctx.stroke();
+  ctx.closePath();
+
+  // Draw center circle
+  ctx.beginPath();
+  ctx.setLineDash([]); // Remove dashes for the circle
+  ctx.arc(canvas.width / 2, canvas.height / 2, 50, 0, Math.PI * 2); // Center and radius
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
+  ctx.lineWidth = 5;
+  ctx.stroke();
+  ctx.closePath();
+}
+
 function drawPaddle1() {
   ctx.beginPath();
   ctx.rect(0 + paddleXOffset, paddle1Y, paddleWidth, paddleHeight);
@@ -253,6 +269,16 @@ function drawPaddle2() {
   ctx.closePath();
 }
 
+function setPaddle1Y(value) {
+  console.log("setPaddle1Y: ", value)
+  paddle1Y = value;
+}
+
+function setPaddle2Y(value) {
+  console.log("setPaddle2Y: ", value)
+  paddle2Y = value;
+}
+
 function getDelta(value) {
   let delta = 0;
   // up
@@ -274,7 +300,9 @@ function getDelta(value) {
 }
 
 function draw() {
+  //console.log("draw");
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  //drawField();
   drawBall();
 
   if (sPressed) {
@@ -386,19 +414,23 @@ function resetGame(playerMissed) {
   dx = direction * speed * Math.cos(angle); // Horizontal velocity
   dy = speed * Math.sin(angle);
 
-  /*
-  dx = (playerMissed === 1 ? 1 : -1) * initialDx; // Reverse direction based on who missed
-  dy = initialDy;*/
+  // reset player paddles
+  setPaddle1Y((canvas.height - paddleHeight) / 2);
+  setPaddle2Y((canvas.height - paddleHeight) / 2);
 
   isSpawning = true;
   spawnStartTime = performance.now();
   speedScaling = 0;
 }
 
+let intervalId;
+let winner = "Player 1";
+
 function endGame() {
   gameRunning = false;
-  const winner = scorePlayer1 >= winningScore ? "Player 1" : "Player 2";
+  winner = scorePlayer1 >= winningScore ? "Player 1" : "Player 2";
 
+  clearInterval(intervalId);
   // Show a message announcing the winner
   const messageElement = document.getElementById("message");
   messageElement.style.display = "block";
@@ -429,17 +461,26 @@ function restartGame() {
   const speed = initialDx; // Ball's initial speed
 
   // Determine direction based on which player missed
-  const direction = playerMissed === 1 ? 1 : -1;
+  const direction = winner === "Player 2" ? 1 : -1;
 
   // Calculate dx and dy based on the angle
   dx = direction * speed * Math.cos(angle); // Horizontal velocity
   dy = speed * Math.sin(angle);
+
+  // reset player paddles
+  setPaddle1Y((canvas.height - paddleHeight) / 2);
+  setPaddle2Y((canvas.height - paddleHeight) / 2);
+
+  value1 = 50;
+  value2 = 50;
+
+  intervalId = setInterval(draw, 10);
 }
 
 document.addEventListener("keydown", () => {
   if (!gameStarted) {
     messageElement.style.display = "none";
-    setInterval(draw, 10);
+    intervalId = setInterval(draw, 10);
     gameStarted = true;
     gameRunning = true;
     isSpawning = true;

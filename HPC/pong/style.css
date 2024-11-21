@@ -215,7 +215,9 @@ button:focus-visible {
   flex: 1 1 90vw;
   border-radius: 20px;
   border: 2px solid #9b6d99;
-  background-color:rgba(255, 255, 255, 0.5);
+  background-color:rgba(255, 255, 255, 0.2);
+  border: 5px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
 }
 
 .chart {
@@ -299,14 +301,21 @@ button:focus-visible {
 
 .scorePlayer1 {
   flex: 1 1 auto;
-  color: #9b6d99;
+  color: #9c2f6d;
   font-size: 32px;
 }
 
-.scorePlayer1, .scorePlayer2 {
+.scorePlayer1 {
   font-family: "Orbitron", sans-serif; /* Digital font for scores */
   font-size: 48px; /* Large font for emphasis */
-  color: #ffcc00; /* Bright yellow for visibility */
+  color: #9c2f6d;
+  margin: 0;
+}
+
+.scorePlayer2 {
+  font-family: "Orbitron", sans-serif; /* Digital font for scores */
+  font-size: 48px; /* Large font for emphasis */
+  color: #40225f;
   margin: 0;
 }
 
