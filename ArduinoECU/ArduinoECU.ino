@@ -8,14 +8,30 @@
 
 CRGB leds[NUM_LEDS];  // Array to hold LED color data
 
-const int xPin = A0;  //the VRX attach to
-const int yPin = A1;  //the VRY attach to
-const int swPin = 8;  //the SW attach to
-int breakSignal =0;
-uint8_t const msg_data[] = {0,0,0,0,0,0,0,0};
-int xPinVal = 0;
-bool isBottom = false;
-bool isUp = false;
+// Define the analog pin for the joystick's X-axis
+const int xPin = A0;  // VRX pin connected to analog pin A0
+
+// Define the analog pin for the joystick's Y-axis
+const int yPin = A1;  // VRY pin connected to analog pin A1
+
+// Define the digital pin for the joystick's button/switch
+const int swPin = 8;  // SW pin connected to digital pin 8
+
+// Variable to represent a brake signal (custom use-case)
+int breakSignal = 0;  // Default value is 0, can be updated based on logic
+
+// Define a static array to hold CAN message data (8 bytes for standard CAN frame)
+uint8_t const msg_data[] = {0, 0, 0, 0, 0, 0, 0, 0};  
+// Each element represents a byte, initialized to 0
+
+// Variable to store the value read from the X-axis
+int xPinVal = 0;  // Will hold values between 0-1023 (from analogRead)
+
+// Boolean flag to check if joystick is pushed to its bottom position
+bool isBottom = false;  // Initially false, updated based on joystick state
+
+// Boolean flag to check if joystick is pushed to its top position
+bool isUp = false;  // Initially false, updated based on joystick state
 
 void setup() {
     // Initialize Serial for debug
@@ -87,53 +103,8 @@ void loop() {
 
     Serial.println();
   }
-
+    // Read the Joystick and convert the values to digital via onboard ADC.
     xPinVal = analogRead(xPin)/4;
-    Serial.print("X: ");
-    Serial.print(analogRead(xPin)/4, DEC);  // print the value of VRX in DEC
-    Serial.print("|Y: ");
-    Serial.print(analogRead(yPin)/4, DEC);  // print the value of VRX in DEC
-    Serial.print("|Z: ");
-    Serial.println(digitalRead(swPin));  // print the value of SW
-
-    // if(xPinVal < 128 && !isUp)
-    // {
-    //   Serial.print("up: ");
-    //   isBottom = false;
-    //   for (int dot = 4; dot >= 0; dot--) {
-    //     leds[dot] = CRGB::Red;   // Set the current LED to blue
-    //     FastLED.show();           // Update LEDs
-    //     leds[dot] = CRGB::Black;  // Clear the current LED
-    //     delay(500);                // Wait for a short period before moving to the next LED
-    //   }
-    //   isUp = true;
-
-    // }
-    // else if (xPinVal > 128 && !isBottom)
-    // {
-    //   Serial.print("down: ");
-    //   isUp = false;
-    //     for (int dot = 4; dot < 8; dot++) {
-    //     leds[dot] = CRGB::Red;   // Set the current LED to blue
-    //     FastLED.show();           // Update LEDs
-    //     leds[dot] = CRGB::Black;  // Clear the current LED
-    //     delay(500);                // Wait for a short period before moving to the next LED      
-    //  }
-    //  isBottom = true;
-    // }
-    // // else
-    // // {
-    // //   Serial.print("neutral: ");
-    // //   leds[0] = CRGB::Black;   // Set the current LED to red
-    // //   leds[1] = CRGB::Black;   // Set the current LED to red
-    // //   leds[2] = CRGB::Black;   // Set the current LED to red
-    // //   leds[3] = CRGB::Black;   // Set the current LED to red
-    // //   leds[4] = CRGB::Red;   // Set the current LED to red
-    // //   leds[5] = CRGB::Black;   // Set the current LED to red
-    // //   leds[6] = CRGB::Black;   // Set the current LED to red
-    // //   leds[7] = CRGB::Black;   // Set the current LED to red
-    // //   FastLED.show();
-    // // }
 
     // send packet: id is 11 bits, packet can contain up to 8 bytes of data
     Serial.print("Sending packet ... ");
