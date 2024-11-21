@@ -74,6 +74,7 @@ if __name__ == "__main__":
     except socketio.exceptions.ConnectionError as e:
         print('Connection failed:', e)
 
+    # Start a thread to handle player one values.
     p1Thread = Thread(target = get_values_player_one, args = ())
     p1Thread.start()
 
