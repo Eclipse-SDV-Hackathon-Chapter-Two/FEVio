@@ -1,13 +1,8 @@
-import socketio
+from flask import Flask
+from flask_socketio import SocketIO, emit
+
 from threading import Thread
 from kuksa_client.grpc import VSSClient
-import time
-
-# Create a Socket.IO client
-sio = socketio.Client()
-
-# Define the namespace
-NAMESPACE = '/pong'
 
 # Set the initial paddle position
 paddle_position = 400  # Starting position (you can adjust this)
@@ -33,65 +28,58 @@ port = 55555
 # test port for local testing
 testPort = 55556
 
-# Socket server IP
-socketIp = 'http://127.0.0.1:3000'
+# Initialize Flask app and SocketIO
+app = Flask(__name__)
+socketio = SocketIO(app, cors_allowed_origins="*")  # Allow CORS for development
 
-# Connect event handler for the /pong namespace
-@sio.on('connect', namespace=NAMESPACE)
-def on_connect():
-   print('Connected to /pong namespace!')
+# Handle connection
+@socketio.on("connect")
+async def connect(sid, environ):
+    print(f"Client connected: {sid}")
+    emit('message', {'data': 'Welcome!'}, to=sid)
 
-# Custom message event handler (for responses from the server)
-@sio.on('reply', namespace=NAMESPACE)
-def on_reply(data):
-   print('Message from server:', data)
+# Handle disconnection
+@socketio.on("disconnect")
+async def disconnect(sid):
+    print(f"Client disconnected: {sid}")
 
 # Handle paddle movement
 def send_paddle_position(player, value):
-    sio.emit('paddleMove', {
+    print("send paddle pos")
+    emit('paddleMove', {
         'player': player,
         'value': value
-    }, namespace=NAMESPACE)
-
+    })
 
 def get_values_player_one():
-    while 1:
-        with VSSClient(ipAddr, port) as client:
+        
+    with VSSClient(ipAddr, port) as client:
 
-            for updates in client.subscribe_current_values([
-                topic_name_player_one,
-            ]):
-                global player_one_value
-                player_one_value = updates[topic_name_player_one].value
-                send_paddle_position(1, player_one_value)
-                print(f"Received update player one: {player_one_value}")
+        for updates in client.subscribe_current_values([
+            topic_name_player_one,
+        ]):
+            global player_one_value
+            player_one_value = updates[topic_name_player_one].value
+            send_paddle_position(1, player_one_value)
+            print(f"Received update player one: {player_one_value}")
+        
 
 def get_values_player_two():
-    while 1:
-        with VSSClient(ipAddr, port) as client:
 
-            for updates in client.subscribe_current_values([
-                topic_name_player_two,
-            ]):
-                global player_two_value
-                player_two_value = updates[topic_name_player_two].value
-                send_paddle_position(2, player_two_value)
-                print(f"Received update player two: {player_two_value}")
-                time.sleep(1.0)
+    with VSSClient(ipAddr, port) as client:
 
-def socket_connect():
-    try:
-        sio.connect(socketIp, namespaces=[NAMESPACE])  # Replace with your server URL
-        print('Socket.IO client connected!')
-    except socketio.exceptions.ConnectionError as e:
-        print('Connection failed:', e)
+        for updates in client.subscribe_current_values([
+            topic_name_player_two,
+        ]):
+            global player_two_value
+            player_two_value = updates[topic_name_player_two].value
+            send_paddle_position(2, player_two_value)
+            print(f"Received update player two: {player_two_value}")
 
+def socket_server():
+     socketio.run(app, host="0.0.0.0", port=3000)
 
 if __name__ == "__main__":
-
-    # start a thread to connect to the web socket server
-    socketThread = Thread(target = socket_connect, args = ())
-    socketThread.start()
 
     # Start a thread to handle player one values.
     p1Thread = Thread(target = get_values_player_one, args = ())
@@ -101,6 +89,4 @@ if __name__ == "__main__":
     p2Thread.start()
 
 
-    while True:
-        # get the values for player 1
-        time.sleep(1.0)
+    socket_server()
