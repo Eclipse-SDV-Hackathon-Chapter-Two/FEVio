@@ -29,14 +29,14 @@ socketio = SocketIO(app, cors_allowed_origins="*")  # Allow CORS for development
 
 # Handle connection
 @socketio.on("connect")
-async def connect(sid, environ):
-    print(f"Client connected: {sid}")
-    emit('message', {'data': 'Welcome!'}, to=sid)
+async def connect():
+    print(f"Client connected")
+    emit('message', {'data': 'Welcome!'})
 
 # Handle disconnection
 @socketio.on("disconnect")
-async def disconnect(sid):
-    print(f"Client disconnected: {sid}")
+async def disconnect():
+    print(f"Client disconnected")
 
 # Handle paddle movement
 def send_paddle_position(player, value):
