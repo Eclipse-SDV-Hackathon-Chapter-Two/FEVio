@@ -6,6 +6,13 @@ The overall architecture with the most important hardware and software elements 
 
 ![Solution Architecture](./sdv_solution_architecture.png)
 
+## Storyline
+
+After a long drive, the driver and the passenger decide to grab a coffee and charge their vehicle.
+To relax they decide to play a game on the infotainment.
+Each player can choose their "color".
+The ambient light in the car will be illuminated in the winning player's color.
+
 ## Cloning
 
 Either specify while cloning `--recurse-submodules` to download the submodules or alternatively update it afterward.
