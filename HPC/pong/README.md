@@ -3,6 +3,8 @@
 To play pong in the browser, navigate to `HPC/pong` and install the dependencies via `npm install`.
 After installing the dependencies, run the game via `npm run dev` and navigate to the webpage in your browser.
 
+![Screenshot](./screenshot.png)
+
 ## Container
 
 ```bash
