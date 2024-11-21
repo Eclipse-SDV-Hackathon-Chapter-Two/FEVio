@@ -23,11 +23,33 @@ a:hover {
 }
 
 body {
-  margin: 0;
+  margin: 0; /* Remove default margin */
+  height: 100vh; /* Ensure full viewport height */
   display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(
+    135deg, /* Gradient angle */
+    #9c2f69, 
+    #9b6d99, 
+    #9c2f6d, 
+    #40225f
+  );
+  background-size: 200% 200%; /* Smooth transition for animations */
+  animation: gradientShift 10s ease infinite; /* Optional gradient animation */
+}
+
+/* Optional: Animate gradient background */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 h1 {
@@ -130,8 +152,8 @@ button:focus-visible {
 }
 
 .content {
-  width: 1440px;
-  height: 920px;
+  width: 860px;
+  height: 420px;
   display: flex;
 }
 
@@ -145,22 +167,40 @@ button:focus-visible {
 
 .playerScore {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
-  font-size: 20px;
+  color: #fff; /* White text color for good contrast */
 }
 
-.playerTag {
+.player1Tag {
   padding: 8px;
+  color: #9c2f6d;
+}
+
+.player2Tag {
+  padding: 8px;
+  color: #40225f;
+}
+
+.player1Tag, .player2Tag {
+  font-family: "Arial Black", sans-serif; /* Bold font for labels */
+  font-size: 20px;
+  margin: 0;
+  text-transform: uppercase; /* Capitalize player names */
 }
 
 .scoreBoard {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
-  max-width: 800px; /* Optional: set a max width for better alignment */
-  margin-bottom: 10px; /* Space between scores and canvas */
+  background-color: rgba(255, 255, 255, 0.2); /* Dark background for the scoreboard */
+  border: 5px solid rgba(255, 255, 255, 0.2); /* A bold border like a scoreboard frame */
+  border-radius: 15px; /* Rounded edges for a modern touch */
+  padding: 20px;
+  width: 80%; /* Adjust the width of the scoreboard */
+  max-width: 800px; /* Maximum width for larger screens */
+  margin: 20px auto; /* Center horizontally */
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.4); /* Shadow for a floating effect */
 }
 
 .leftScore {
@@ -173,8 +213,9 @@ button:focus-visible {
 
 .canvasContainer {
   flex: 1 1 90vw;
-  border-radius: 5px;
-  border: 1px solid #521463;
+  border-radius: 20px;
+  border: 2px solid #9b6d99;
+  background-color:rgba(255, 255, 255, 0.5);
 }
 
 .chart {
@@ -252,30 +293,40 @@ button:focus-visible {
 
 .scorePlayer2 {
   flex: 1 1 auto;
-  color: #da328e;
+  color: #9b6d99;
   font-size: 32px;
 }
 
 .scorePlayer1 {
   flex: 1 1 auto;
-  color: #da328e;
+  color: #9b6d99;
   font-size: 32px;
 }
 
-.player_1_score {
-  height: 50px;
-  width: 50px;
-  color: chartreuse;
-  margin-top: 30px;
+.scorePlayer1, .scorePlayer2 {
+  font-family: "Orbitron", sans-serif; /* Digital font for scores */
+  font-size: 48px; /* Large font for emphasis */
+  color: #ffcc00; /* Bright yellow for visibility */
+  margin: 0;
 }
 
-.player_2_score {
-  height: 50px;
-  width: 50px;
-  color: chartreuse;
-  position: fixed;
-  left: 70vw;
-  margin-top: 30px;
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    color: #ffcc00;
+  }
+  50% {
+    transform: scale(1.2);
+    color: #fff;
+  }
+  100% {
+    transform: scale(1);
+    color: #ffcc00;
+  }
+}
+
+.scorePlayer1.pulse, .scorePlayer2.pulse {
+  animation: pulse 0.5s ease-in-out;
 }
 
 .message {

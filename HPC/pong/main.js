@@ -31,11 +31,11 @@ document.querySelector('#app').innerHTML = `
   <h1 id="message" class="gameMessage">Press any button to start the game</h1>
   <div class="scoreBoard">
     <div class="playerScore leftScore">
-      <h2 class="playerTag">Player 1:</h2>
+      <h2 class="player1Tag">Player 1:</h2>
       <h2 class="scorePlayer1">0</h2>
     </div>
     <div class="playerScore rightScore">
-      <h2 class="playerTag">Player 2:</h2>
+      <h2 class="player2Tag">Player 2:</h2>
       <h2 class="scorePlayer2">0</h2>
     </div>
   </div>
@@ -131,11 +131,17 @@ function drawBall() {
   // Set ball opacity
   ctx.globalAlpha = currentOpacity;
 
+  ctx.beginPath();
+  ctx.arc(x, y, currentBallRadius, 0, Math.PI * 2); // Draw the circle
+  ctx.fillStyle = "#9c2f69"; // Color of the circle
+  ctx.fill();
+  ctx.closePath();
+
   // Draw the ball
   if (ballImage.complete) {
-    ctx.translate(x, y);
-    ctx.rotate(spinAngle);
-    ctx.translate(-x, -y);
+    // ctx.translate(x, y);
+    // ctx.rotate(spinAngle);
+    // ctx.translate(-x, -y);
     ctx.drawImage(
       ballImage,
       x - currentBallRadius,
@@ -221,7 +227,7 @@ function drawPaddle1() {
     gradient.addColorStop(1, "#9c2f69");
     ctx.fillStyle = gradient;
   } else {
-    ctx.fillStyle = "#410b54"; // Default paddle color
+    ctx.fillStyle = "#9c2f6d"; // Default paddle color
   }
   ctx.fill();
   ctx.closePath();
@@ -241,7 +247,7 @@ function drawPaddle2() {
     gradient.addColorStop(1, "#9c2f69"); // End color (yellow)
     ctx.fillStyle = gradient;
   } else {
-    ctx.fillStyle = "#410b54"; // Default paddle color
+    ctx.fillStyle = "#40225f"; // Default paddle color
   }
   ctx.fill();
   ctx.closePath();
