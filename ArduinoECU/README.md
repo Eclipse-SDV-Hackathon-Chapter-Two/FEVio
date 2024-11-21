@@ -51,3 +51,7 @@ CM_ SG_ 100 Z "Joystick Z switch state (0 or 1)";
 # Debugging
 
 Debugging can be done via the serial monitor at a baud rate of 115200
+
+# Dependencies
+
+Use the provided .zip file to load the CAN library into your Arduino IDE to use the API's
