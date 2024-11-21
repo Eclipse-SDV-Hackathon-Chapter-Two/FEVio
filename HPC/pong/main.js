@@ -31,12 +31,14 @@ document.querySelector('#app').innerHTML = `
     <h1 id="message" class="gameMessage">Press any button to start the game</h1>
     <div class="content">
       <div class="containerScore">
+        <h2 class="playerTag">Player 1</h2>
         <h1 class="scorePlayer1">0</h1>
       </div>
       <div class="canvasContainer">
         <canvas id="myCanvas" class="chart"></canvas>
       </div>
       <div class="containerScore">
+        <h2 class="playerTag">Player 2</h2>
         <h1 class="scorePlayer2">0</h1>
       </div>
     </div>
@@ -66,8 +68,8 @@ let scorePlayer2 = 0;
 
 const initialBallX = canvas.width / 2;
 const initialBallY = canvas.height / 2;
-const initialDx = 8; // Adjust speed as needed
-const initialDy = 8;
+const initialDx = 4; // Adjust speed as needed
+const initialDy = 4;
 
 let x = initialBallX;
 let y = initialBallY;

@@ -130,8 +130,8 @@ button:focus-visible {
 }
 
 .content {
-  width: 860px;
-  height: 420px;
+  width: 1092px;
+  height: 540px;
   display: flex;
 }
 
@@ -141,12 +141,17 @@ button:focus-visible {
   height: 100%;
 }
 
+.playerTag {
+}
+
 .containerScore {
   padding-left: 12px;
   padding-right: 12px;
   display: flex;
-  flex: 1 1 5vw;
-  flex-direction: row;
+  flex: 1 1 10vw;
+  flex-direction: column; /* Stack children vertically */
+  align-items: center; /* Center children horizontally */
+  justify-content: center; /* Center children vertically (optional) */
 }
 
 .canvasContainer {
@@ -157,10 +162,6 @@ button:focus-visible {
 .chart {
   background-color: whitesmoke;
   position: relative;
-}
-
-runButton {
-  display: block;
 }
 
 .board {
@@ -233,11 +234,13 @@ runButton {
 }
 
 .scorePlayer2 {
+  margin-top: 0;
   flex: 1 1 auto;
   color: #da328e;
 }
 
 .scorePlayer1 {
+  margin-top: 0;
   flex: 1 1 auto;
   color: #da328e;
 }
