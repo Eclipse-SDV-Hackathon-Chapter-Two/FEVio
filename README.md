@@ -13,6 +13,8 @@ To relax they decide to play a game on the infotainment.
 Each player can choose their "color".
 The ambient light in the car will be illuminated in the winning player's color.
 
+![Giraffes](./giraffes.WEBP)
+
 ## Cloning
 
 Either specify while cloning `--recurse-submodules` to download the submodules or alternatively update it afterward.
