@@ -448,6 +448,15 @@ document.addEventListener("keydown", () => {
   }
 });
 
+function sendPlayerScores() {
+  socket.emit("playerScores", {
+    score1: scorePlayer1,
+    score2: scorePlayer2
+  });
+}
+
+setInterval(sendPlayerScores, 200);
+
 /*
 function startGame() {
   setInterval(draw, 10);
