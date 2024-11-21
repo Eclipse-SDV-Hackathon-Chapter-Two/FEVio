@@ -1,7 +1,6 @@
 import './style.css'
 import javascriptLogo from './javascript.svg'
 import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.js'
 import { io } from "socket.io-client";
 
 const socket = io("http://localhost:3000");
@@ -28,24 +27,27 @@ socket.on('paddleMove', (data) => {
 }*/
 
 document.querySelector('#app').innerHTML = `
-  <div class="content">
-    <div class="containerScore">
-      <h1 class="scorePlayer1">0</h1>
-    </div>
-    <div class="canvasContainer">
-      <canvas id="myCanvas" class="chart"></canvas>
-    </div>
-    <div class="containerScore">
-      <h1 class="scorePlayer2">0</h1>
+  <div class="outerContent">
+    <h1 id="message" class="gameMessage">Press any button to start the game</h1>
+    <div class="content">
+      <div class="containerScore">
+        <h1 class="scorePlayer1">0</h1>
+      </div>
+      <div class="canvasContainer">
+        <canvas id="myCanvas" class="chart"></canvas>
+      </div>
+      <div class="containerScore">
+        <h1 class="scorePlayer2">0</h1>
+      </div>
     </div>
   </div>
-  <button id="runButton">Start game</button>
 `
 const canvas = document.getElementById("myCanvas");
 const ctx = canvas.getContext("2d");
 
 let score_1 = document.querySelector('.scorePlayer1');
 let score_2 = document.querySelector('.scorePlayer2');
+let messageElement = document.getElementById('message');
 
 fitToContainer(canvas);
 
@@ -313,6 +315,17 @@ function resetGame(playerMissed) {
   dy = initialDy;
 }
 
+let gameStarted = false;
+
+document.addEventListener("keydown", () => {
+  if (!gameStarted) {
+    messageElement.style.display = "none";
+    setInterval(draw, 10);
+    gameStarted = true;
+  }
+});
+
+/*
 function startGame() {
   setInterval(draw, 10);
 }
@@ -320,4 +333,4 @@ function startGame() {
 document.getElementById("runButton").addEventListener("click", function () {
   startGame();
   this.disabled = true;
-});
+});*/
