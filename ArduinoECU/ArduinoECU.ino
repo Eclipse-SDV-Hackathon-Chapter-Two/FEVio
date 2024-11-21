@@ -6,6 +6,12 @@
 #define NUM_LEDS 8    // Number of LEDs in the chain
 #define DATA_PIN 6    // Data pin for LED control
 
+int playerOneScore = 0;
+int playerTwoScore = 0;
+int scoreLimit = 5;
+bool playerOneWins = false;
+bool playerTwoWins = false;;
+
 CRGB leds[NUM_LEDS];  // Array to hold LED color data
 
 // Define the analog pin for the joystick's X-axis
@@ -53,6 +59,114 @@ void setup() {
     delay(300);
 }
 
+void resetGame()
+{
+  playerOneScore = 0;
+  playerTwoScore = 0;
+  playerOneWins = false;
+  playerTwoWins = false;
+}
+// Knight Rider Effect
+void knightRider(CRGB color, int trailLength) {
+  static int position = 0;
+  static int direction = 1; // 1 = forward, -1 = backward
+
+  // Draw the trail
+  for (int i = 0; i < NUM_LEDS; i++) {
+    if (abs(i - position) < trailLength) {
+      leds[i] = color.nscale8(255 - (abs(i - position) * (255 / trailLength)));
+    } else {
+      leds[i] = CRGB::Black;
+    }
+  }
+
+  FastLED.show();
+  delay(10); // Adjust speed of the effect
+
+  // Update position and direction
+  position += direction;
+  if (position >= NUM_LEDS - 1 || position <= 0) {
+    direction *= -1; // Reverse direction
+  }
+}
+
+void partyMode()
+{
+  knightRider(CRGB::Red, 3);
+}
+/*
+void gameState(int index, int msgData[])
+{
+    switch(index)
+    {
+      case 0:
+      playerOneScore = msgData[index];
+      if(playerOneScore >= scoreLimit)
+      {
+          playerOneWins = true;
+          resetGame();
+      }
+      else
+      {
+        if(playerOneScore == 1)
+        {
+          leds[playerOneScore] = CRGB::Red;
+          FastLED.show();
+        }else
+        {
+          leds[playerOneScore - 1] = playerOneScore - 1;
+          FastLED.show();
+          leds[i] = playerOneScore;
+          FastLED.show();
+        }
+        
+      }
+
+
+
+      else
+      {
+          playerOneScore++;
+          if(playerOneScore >= scoreLimit)
+          {
+            playerOneWins = true;
+            resetGame();
+          }
+          else
+          {
+            if(playerOneScore == 1)
+            {
+              leds[playerOneScore] = CRGB::Red;
+            }
+            leds[playerOneScore - 1] = playerOneScore - 1;
+            FastLED.show();
+            leds[i] = playerOneScore;
+            FastLED.show();
+          }
+      }
+      case 1:
+      playerTwoScore = msgdata[index];
+      if(playerTwoScore >= scoreLimit)
+      {
+          playerTwoWins = true;
+          resetGame();
+      }
+      else
+      {
+          playerTwoScore++;
+          if(playerTwoScore >= scoreLimit)
+          {
+            playerTwoWins = true;
+            partyMode();
+            delay(4000);
+            resetGame();
+          }
+      }
+      // player two
+
+    }
+}
+*/
 void loop() {
   // try to parse packet
   int packetSize = CAN.parsePacket();
@@ -90,10 +204,8 @@ void loop() {
           Serial.print(" ");
           msgdata[i] = CAN.read();
           Serial.println(msgdata[i]);
-          if(i==0)
-          {
-            breakSignal = msgdata[i];
-          }
+
+          gameState(i, msgdata);
           i++;
           }
         Serial.println(" DataEND");
@@ -105,6 +217,12 @@ void loop() {
   }
     // Read the Joystick and convert the values to digital via onboard ADC.
     xPinVal = analogRead(xPin)/4;
+    Serial.print("X: ");
+    Serial.print(analogRead(xPin)/4, DEC);  // print the value of VRX in DEC
+    Serial.print("|Y: ");
+    Serial.print(analogRead(yPin)/4, DEC);  // print the value of VRX in DEC
+    Serial.print("|Z: ");
+    Serial.println(digitalRead(swPin));  // print the value of SW
 
     // send packet: id is 11 bits, packet can contain up to 8 bytes of data
     Serial.print("Sending packet ... ");
