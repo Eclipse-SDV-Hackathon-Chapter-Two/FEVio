@@ -27,22 +27,25 @@ socket.on('paddleMove', (data) => {
 }*/
 
 document.querySelector('#app').innerHTML = `
-  <div class="outerContent">
-    <h1 id="message" class="gameMessage">Press any button to start the game</h1>
-    <div class="content">
-      <div class="containerScore">
-        <h2 class="playerTag">Player 1</h2>
-        <h1 class="scorePlayer1">0</h1>
-      </div>
-      <div class="canvasContainer">
-        <canvas id="myCanvas" class="chart"></canvas>
-      </div>
-      <div class="containerScore">
-        <h2 class="playerTag">Player 2</h2>
-        <h1 class="scorePlayer2">0</h1>
-      </div>
+<div class="outerContent">
+  <h1 id="message" class="gameMessage">Press any button to start the game</h1>
+  <div class="scoreBoard">
+    <div class="playerScore leftScore">
+      <h2 class="playerTag">Player 1:</h2>
+      <h2 class="scorePlayer1">0</h2>
+    </div>
+    <div class="playerScore rightScore">
+      <h2 class="playerTag">Player 2:</h2>
+      <h2 class="scorePlayer2">0</h2>
     </div>
   </div>
+  <div class="content">
+    <div class="canvasContainer">
+      <canvas id="myCanvas" class="chart"></canvas>
+    </div>
+  </div>
+</div>
+
 `
 const canvas = document.getElementById("myCanvas");
 const ctx = canvas.getContext("2d");
@@ -65,11 +68,12 @@ function fitToContainer(canvas){
 
 let scorePlayer1 = 0;
 let scorePlayer2 = 0;
+const winningScore = 5;
 
 const initialBallX = canvas.width / 2;
 const initialBallY = canvas.height / 2;
-const initialDx = 4; // Adjust speed as needed
-const initialDy = 4;
+const initialDx = 6; // Adjust speed as needed
+const initialDy = 6;
 
 let x = initialBallX;
 let y = initialBallY;
@@ -91,54 +95,80 @@ function handlePaddleHit(paddle) {
   }
 }
 
-let spinAngle = 10; // Current rotation angle of the ball
-const spinSpeed = 0.1; // Speed of the spin (adjust as needed)
+let spinAngle = 0; // Current rotation angle of the ball
+const spinSpeed = 0; // Speed of the spin (adjust as needed)
 
 const ballImage = new Image();
 ballImage.src = "ankaios.png";
 
-function drawBall() {
-  if (ballImage.complete) {
-    ctx.save();
+let isSpawning = false;
+let spawnStartTime = null;
+const spawnDuration = 600;
+let speedScaling = 0; // Scales from 0 to 1 during the spawn animation
 
-    // Translate and rotate the canvas
+function drawBall() {
+  ctx.save();
+
+  // Calculate the ball's properties if it is spawning
+  let currentBallRadius = ballRadius; // Default size
+  let currentOpacity = 1; // Default opacity
+
+  if (isSpawning) {
+    const now = performance.now();
+    const elapsed = now - spawnStartTime;
+
+    if (elapsed < spawnDuration) {
+      const progress = elapsed / spawnDuration; // Progress from 0 to 1
+      currentBallRadius = ballRadius * progress; // Gradually increase size
+      currentOpacity = progress; // Gradually increase opacity
+      speedScaling = progress; // Gradually scale speed
+    } else {
+      isSpawning = false; // End the animation
+      speedScaling = 1; // Set speed scaling to normal
+    }
+  }
+
+  // Set ball opacity
+  ctx.globalAlpha = currentOpacity;
+
+  // Draw the ball
+  if (ballImage.complete) {
     ctx.translate(x, y);
     ctx.rotate(spinAngle);
     ctx.translate(-x, -y);
-
-    // Draw the SVG image
     ctx.drawImage(
       ballImage,
-      x - ballRadius,
-      y - ballRadius,
-      ballRadius * 2,
-      ballRadius * 2
+      x - currentBallRadius,
+      y - currentBallRadius,
+      currentBallRadius * 2,
+      currentBallRadius * 2
     );
-
     ctx.restore();
 
+    // Draw the border
     ctx.beginPath();
-    ctx.arc(x, y, ballRadius, 0, Math.PI * 2); // Circle border
+    ctx.arc(x, y, currentBallRadius, 0, Math.PI * 2);
     ctx.strokeStyle = "#9c2f69";
     ctx.lineWidth = 1;
     ctx.stroke();
     ctx.closePath();
-
-    // Increment spin angle
     spinAngle += spinSpeed;
   } else {
-    // Fallback circle
+    // Fallback ball
     ctx.beginPath();
-    ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+    ctx.arc(x, y, currentBallRadius, 0, Math.PI * 2);
     ctx.fillStyle = "#410b54";
     ctx.fill();
     ctx.closePath();
   }
+
+  ctx.restore();
+  ctx.globalAlpha = 1; // Reset global alpha for other elements
 }
 
 const paddleHeight = 75;
 const paddleWidth = 10;
-const paddleXOffset = paddleWidth;
+const paddleXOffset = 2 * paddleWidth;
 
 let paddle1Y = (canvas.height - paddleHeight) / 2;
 let paddle2Y = (canvas.height - paddleHeight) / 2;
@@ -271,10 +301,16 @@ function draw() {
   drawPaddle1();
   drawPaddle2();
 
-  if (x - ballRadius < paddleWidth) {
-    if (y > paddle1Y && y < paddle1Y + paddleHeight) {
+  // Ball collision with left paddle (player 1)
+  if (dx < 0 && x - ballRadius <= paddleWidth + paddleXOffset) { // Ball moving left and touches paddle plane
+    if (y + ballRadius >= paddle1Y && y - ballRadius <= paddle1Y + paddleHeight) { // Include ball radius in vertical check
       dx = -dx; // Reverse ball direction on x-axis
       handlePaddleHit(1);
+
+      // Adjust vertical speed based on hit position (angle reflection)
+      const paddleCenter = paddle1Y + paddleHeight / 2;
+      const distanceFromCenter = y - paddleCenter;
+      dy += distanceFromCenter * 0.1; // Adjust vertical speed based on hit position
     } else {
       console.log("Missed player 1 paddle");
       resetGame(1);
@@ -282,13 +318,18 @@ function draw() {
   }
 
   // Ball collision with right paddle (player 2)
-  if (x + ballRadius > canvas.width - paddleWidth) {
-    if (y > paddle2Y && y < paddle2Y + paddleHeight) {
+  if (dx > 0 && x + ballRadius >= canvas.width - paddleWidth - paddleXOffset) { // Ball moving right and touches paddle plane
+    if (y + ballRadius >= paddle2Y && y - ballRadius <= paddle2Y + paddleHeight) { // Include ball radius in vertical check
       dx = -dx; // Reverse ball direction on x-axis
       handlePaddleHit(2);
+
+      // Adjust vertical speed based on hit position (angle reflection)
+      const paddleCenter = paddle2Y + paddleHeight / 2;
+      const distanceFromCenter = y - paddleCenter;
+      dy += distanceFromCenter * 0.1; // Adjust vertical speed based on hit position
     } else {
       console.log("Missed player 2 paddle");
-      resetGame(2); // Optionally reset game or adjust score
+      resetGame(2);
     }
   }
   
@@ -296,11 +337,16 @@ function draw() {
     dy = -dy;
   }
   
-  x += dx;
-  y += dy;
+  x += dx * speedScaling;
+  y += dy * speedScaling;
 }
 
+let gameStarted = false;
+let gameRunning = false;
+
 function resetGame(playerMissed) {
+  if (!gameRunning) return;
+
   // Update score based on which player missed
   if (playerMissed === 1) {
     scorePlayer2++;
@@ -310,20 +356,84 @@ function resetGame(playerMissed) {
     score_1.innerHTML = scorePlayer1; // Update Player 1 score in DOM
   }
 
+  if (scorePlayer1 >= winningScore || scorePlayer2 >= winningScore) {
+    endGame();
+    return;
+  }
+
   // Reset ball position and direction
   x = initialBallX;
   y = initialBallY;
+
+  const angle = (Math.random() * Math.PI) / 3 - Math.PI / 6; // Range: [-PI/6, PI/6] for variation
+  const speed = initialDx; // Ball's initial speed
+
+  // Determine direction based on which player missed
+  const direction = playerMissed === 1 ? 1 : -1;
+
+  // Calculate dx and dy based on the angle
+  dx = direction * speed * Math.cos(angle); // Horizontal velocity
+  dy = speed * Math.sin(angle);
+
+  /*
   dx = (playerMissed === 1 ? 1 : -1) * initialDx; // Reverse direction based on who missed
-  dy = initialDy;
+  dy = initialDy;*/
+
+  isSpawning = true;
+  spawnStartTime = performance.now();
+  speedScaling = 0;
 }
 
-let gameStarted = false;
+function endGame() {
+  gameRunning = false;
+  const winner = scorePlayer1 >= winningScore ? "Player 1" : "Player 2";
+
+  // Show a message announcing the winner
+  const messageElement = document.getElementById("message");
+  messageElement.style.display = "block";
+  messageElement.textContent = `${winner} Wins! Press any button to restart.`;
+
+  // Reset scores and restart on key press
+  document.addEventListener("keydown", restartGame, { once: true });
+}
+
+function restartGame() {
+  // Reset scores and game state
+  scorePlayer1 = 0;
+  scorePlayer2 = 0;
+  score_1.innerHTML = scorePlayer1;
+  score_2.innerHTML = scorePlayer2;
+
+  gameRunning = true;
+
+  // Hide the message
+  const messageElement = document.getElementById("message");
+  messageElement.style.display = "none";
+
+  // Reset ball position and direction
+  x = initialBallX;
+  y = initialBallY;
+
+  const angle = (Math.random() * Math.PI) / 3 - Math.PI / 6; // Range: [-PI/6, PI/6] for variation
+  const speed = initialDx; // Ball's initial speed
+
+  // Determine direction based on which player missed
+  const direction = playerMissed === 1 ? 1 : -1;
+
+  // Calculate dx and dy based on the angle
+  dx = direction * speed * Math.cos(angle); // Horizontal velocity
+  dy = speed * Math.sin(angle);
+}
 
 document.addEventListener("keydown", () => {
   if (!gameStarted) {
     messageElement.style.display = "none";
     setInterval(draw, 10);
     gameStarted = true;
+    gameRunning = true;
+    isSpawning = true;
+    spawnStartTime = performance.now();
+    speedScaling = 0;
   }
 });
 
