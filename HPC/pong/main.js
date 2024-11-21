@@ -75,7 +75,7 @@ let y = initialBallY;
 let dx = initialDx;
 let dy = -initialDy;
 
-const ballRadius = 25;
+const ballRadius = 32;
 
 let paddle1Hit = false;
 let paddle2Hit = false;
@@ -243,7 +243,7 @@ function drawPaddle1() {
     gradient.addColorStop(1, "#9c2f69");
     ctx.fillStyle = gradient;
   } else {
-    ctx.fillStyle = "#40225f"; // Default paddle color
+    ctx.fillStyle = "#9c2f6d"; // Default paddle color
   }
   ctx.fill();
   ctx.closePath();
@@ -263,7 +263,7 @@ function drawPaddle2() {
     gradient.addColorStop(1, "#9c2f69"); // End color (yellow)
     ctx.fillStyle = gradient;
   } else {
-    ctx.fillStyle = "#9c2f6d"; // Default paddle color
+    ctx.fillStyle = "#40225f"; // Default paddle color
   }
   ctx.fill();
   ctx.closePath();
@@ -413,10 +413,6 @@ function resetGame(playerMissed) {
   // Calculate dx and dy based on the angle
   dx = direction * speed * Math.cos(angle); // Horizontal velocity
   dy = speed * Math.sin(angle);
-
-  // reset player paddles
-  setPaddle1Y((canvas.height - paddleHeight) / 2);
-  setPaddle2Y((canvas.height - paddleHeight) / 2);
 
   value1 = 50;
   value2 = 50;

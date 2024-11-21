@@ -174,12 +174,12 @@ button:focus-visible {
 
 .player1Tag {
   padding: 8px;
-  color: #40225f;
+  color: #9c2f6d;
 }
 
 .player2Tag {
   padding: 8px;
-  color: #9c2f6d;
+  color: #40225f;
 }
 
 .player1Tag, .player2Tag {
@@ -216,7 +216,7 @@ button:focus-visible {
   border-radius: 20px;
   border: 2px solid #9b6d99;
   background-color:rgba(255, 255, 255, 0.2);
-  border: 5px solid rgba(255, 255, 255, 0.2);
+  border: 5px solid rgba(255, 255, 255, 0.4);
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
 }
 
@@ -308,14 +308,14 @@ button:focus-visible {
 .scorePlayer1 {
   font-family: "Orbitron", sans-serif; /* Digital font for scores */
   font-size: 48px; /* Large font for emphasis */
-  color: #40225f;
+  color: #9c2f6d;
   margin: 0;
 }
 
 .scorePlayer2 {
   font-family: "Orbitron", sans-serif; /* Digital font for scores */
   font-size: 48px; /* Large font for emphasis */
-  color: #9c2f6d;
+  color: #40225f;
   margin: 0;
 }
 
