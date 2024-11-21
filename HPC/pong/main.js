@@ -6,10 +6,20 @@ import { io } from "socket.io-client";
 
 const socket = io("http://localhost:3000");
 
+// 50 = 0
+// 0-49 = down
+// 51-100 = up
+let value1 = 50;
+let value2 = 50;
+
 socket.on('paddleMove', (data) => {
   console.log(data);
-  // player = data.player;
-  // value = data.value;
+  let player = data.player;
+  if (player == 1) {
+    value1 = data.value;
+  } else if (player == 2) {
+    value2 = data.value;
+  }
 });
 
 /*function movePaddle(player, direction) {
@@ -203,6 +213,26 @@ function drawPaddle2() {
   ctx.closePath();
 }
 
+function getDelta(value) {
+  let delta = 0;
+  // up
+  if (value > 50 && value <= 100) {
+    if (value >= 75) {
+      delta = 10;
+    } else {
+      delta = 5;
+    }
+  // down
+  } else if (value >= 0 && value < 50) {
+    if (value < 25) {
+      delta = -10;
+    } else {
+      delta = -5;
+    }
+  }
+  return delta;
+}
+
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBall();
@@ -219,6 +249,21 @@ function draw() {
     paddle2Y = Math.max(paddle2Y - 7, 0);
   }
 
+  let delta1 = getDelta(value1);
+  let delta2 = getDelta(value2);
+
+  if (delta1 > 0) {
+    paddle1Y = Math.min(paddle1Y + delta1, canvas.height - paddleHeight);
+  } else if (delta1 < 0) {
+    paddle1Y = Math.max(paddle1Y + delta1, 0);
+  }
+
+  if (delta2 > 0) {
+    paddle2Y = Math.min(paddle2Y + delta2, canvas.height - paddleHeight);
+  } else if (delta2 < 0) {
+    paddle2Y = Math.max(paddle2Y + delta2, 0);
+  }
+ 
   drawPaddle1();
   drawPaddle2();
 
