@@ -52,6 +52,7 @@ def send_player_scores(data):
             topic_name_player_two_score: Datapoint(data["score2"]),
         })
         print(f"Sending {data["score1"]} and {data["score2"]} as scores...")
+        time.sleep(0.5)
 
 # Handle paddle movement
 def send_paddle_position(player, value):
