@@ -1,0 +1,9 @@
+bidict==0.23.1
+h11==0.14.0
+netifaces==0.10.6
+python-engineio==4.10.1
+python-socketio==5.11.4
+setuptools==3.3
+simple-websocket==1.1.0
+socketio==0.2.1
+wsproto==1.2.0
