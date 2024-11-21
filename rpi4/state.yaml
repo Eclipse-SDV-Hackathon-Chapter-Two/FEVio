@@ -51,7 +51,7 @@ workloads:
     restartPolicy: ALWAYS
     dependencies:
     runtimeConfig: |
-       image: localhost/can_reader:latest
+       image: localhost/can_transceiver:latest
        commandOptions: ["--net", "host"]
     controlInterfaceAccess:
         allowRules:
