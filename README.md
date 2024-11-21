@@ -6,7 +6,8 @@ The overall architecture with the most important hardware and software elements 
 
 ![Solution Architecture](./sdv_solution_architecture.png)
 
-# Cloning
+## Cloning
+
 Either specify while cloning `--recurse-submodules` to download the submodules or alternatively update it afterward.
 
 ```shell
@@ -14,7 +15,7 @@ git submodule init
 git submodule update --recursive
 ```
 
-# OpenOCD
+## OpenOCD
 
 [OpenOCD](https://github.com/openocd-org/openocd) is used to flash the MXChip AZ3166.
 
@@ -25,6 +26,11 @@ make
 sudo make install 
 ```
 
-## Flashing
+### Flashing
 
-openocd -f board/stm32f4discovery.cfg -c "program ../build/app/mxchip_threadx.elf verify reset exit"
+To flash the MXChip AZ3166, use `challenge-threadx-and-beyond/MXChip/AZ3166/scripts/flash.sh`.
+
+## Pong
+
+To play pong in the browser, navigate to `HPC/pong` and install the dependencies via `npm install`.
+After installing the dependencies, run the game via `npm run dev` and navigate to the webpage in your browser.
