@@ -1,4 +1,5 @@
 import socketio
+from threading import Thread
 from kuksa_client.grpc import VSSClient
 import time
 
@@ -16,7 +17,9 @@ WIDTH = 800
 paddle_speed = 10  # Speed at which the paddle moves
 # topic to subscribe to for paddle input
 topic_name_player_one = 'Vehicle.Cabin.Infotainment.Navigation.Volume'
+topic_name_player_two = 'Vehicle.Cabin.Infotainment.Media.Volume'
 player_one_value = 0
+player_two_value = 0
 
 # Connect event handler for the /pong namespace
 @sio.on('connect', namespace=NAMESPACE)
@@ -36,17 +39,34 @@ def send_paddle_position(paddle_position):
 
 
 #10.42.0.1
-def get_values_player_one(topic_name):
-    with VSSClient('127.0.0.1', 55556) as client:
+def get_values_player_one():
+    while 1:
+        with VSSClient('127.0.0.1', 55556) as client:
 
-        for updates in client.subscribe_current_values([
-            topic_name,
-        ]):
-            player_one_value = updates[topic_name].value
-            send_paddle_position(player_one_value)
-            print(f"Received update: {player_one_value}")
+            for updates in client.subscribe_current_values([
+                topic_name_player_one,
+            ]):
+                global player_one_value
+                player_one_value = updates[topic_name_player_one].value
+                send_paddle_position(player_one_value)
+                print(f"Received update player one: {player_one_value}")
+
+def get_values_player_two():
+    while 1:
+        with VSSClient('127.0.0.1', 55556) as client:
+
+            for updates in client.subscribe_current_values([
+                topic_name_player_two,
+            ]):
+                global player_two_value
+                player_one_value = updates[topic_name_player_two].value
+                print(f"Received update player two: {player_two_value}")
+                time.sleep(1.0)
+
 
 if __name__ == "__main__":
+    #p2Thread = Thread(target = get_values_player_two, args = ())
+    #p2Thread.start()
 
     try:
         sio.connect('http://127.0.0.1:3000', namespaces=[NAMESPACE])  # Replace with your server URL
@@ -54,8 +74,10 @@ if __name__ == "__main__":
     except socketio.exceptions.ConnectionError as e:
         print('Connection failed:', e)
 
+    p1Thread = Thread(target = get_values_player_one, args = ())
+    p1Thread.start()
+
+
     while True:
-        print(player_one_value)
         # get the values for player 1
-        get_values_player_one(topic_name_player_one)
         time.sleep(1.0)
