@@ -356,6 +356,11 @@ function resetGame(playerMissed) {
     score_1.innerHTML = scorePlayer1; // Update Player 1 score in DOM
   }
 
+  socket.emit("playerScores", {
+    score1: scorePlayer1,
+    score2: scorePlayer2
+  });
+
   if (scorePlayer1 >= winningScore || scorePlayer2 >= winningScore) {
     endGame();
     return;
