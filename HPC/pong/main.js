@@ -243,7 +243,7 @@ function drawPaddle1() {
     gradient.addColorStop(1, "#9c2f69");
     ctx.fillStyle = gradient;
   } else {
-    ctx.fillStyle = "#9c2f6d"; // Default paddle color
+    ctx.fillStyle = "#40225f"; // Default paddle color
   }
   ctx.fill();
   ctx.closePath();
@@ -263,20 +263,20 @@ function drawPaddle2() {
     gradient.addColorStop(1, "#9c2f69"); // End color (yellow)
     ctx.fillStyle = gradient;
   } else {
-    ctx.fillStyle = "#40225f"; // Default paddle color
+    ctx.fillStyle = "#9c2f6d"; // Default paddle color
   }
   ctx.fill();
   ctx.closePath();
 }
 
-function setPaddle1Y(value) {
-  console.log("setPaddle1Y: ", value)
-  paddle1Y = value;
+function setPaddle1Y(paddle1YValue) {
+  console.log("setPaddle1Y: ", paddle1YValue)
+  paddle1Y = paddle1YValue;
 }
 
-function setPaddle2Y(value) {
-  console.log("setPaddle2Y: ", value)
-  paddle2Y = value;
+function setPaddle2Y(paddle2YValue) {
+  console.log("setPaddle2Y: ", paddle2YValue)
+  paddle2Y = paddle2YValue;
 }
 
 function getDelta(value) {
