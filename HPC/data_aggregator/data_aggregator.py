@@ -1,13 +1,18 @@
 from flask import Flask
 from flask_socketio import SocketIO, emit
 
+import time
+
 from threading import Thread
 from kuksa_client.grpc import VSSClient
+from kuksa_client.grpc import Datapoint
 
 
 # topic to subscribe to for paddle input
 topic_name_player_one = 'Vehicle.Cabin.Infotainment.Navigation.Volume'
 topic_name_player_two = 'Vehicle.Cabin.Infotainment.Media.Volume'
+topic_name_player_one_score = 'Vehicle.Cabin.DoorCount'
+topic_name_player_two_score = 'Vehicle.Cabin.SeatRowCount'
 player_one_value = 0
 player_two_value = 0
 
@@ -37,6 +42,21 @@ async def connect():
 @socketio.on("disconnect")
 async def disconnect():
     print(f"Client disconnected")
+
+@socketio.on("playerScores")
+def send_player_scores(data):
+    print(f"Received playerScores")
+    with VSSClient(ipAddr, port) as client:
+        client.set_current_values({
+            topic_name_player_one_score: Datapoint(data.score1),
+        })
+        print(f"Feeding {data.score1} to {topic_name_player_one_score}...")
+        time.sleep(1)
+        client.set_current_values({
+            topic_name_player_two_score: Datapoint(data.score2),
+        })
+        print(f"Feeding {data.score2} to {topic_name_player_two_score}...")
+        time.sleep(1)
 
 # Handle paddle movement
 def send_paddle_position(player, value):
