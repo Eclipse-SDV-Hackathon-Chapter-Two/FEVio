@@ -33,7 +33,7 @@ sudo systemctl start ank-agent
 sudo reboot
 ```
 
-## Build can_reader container
+## Build can_reader image
 ```
 sudo su
 cd can_reader
@@ -43,7 +43,7 @@ podman build . -t can_reader
 Note that the `can_reader` will use the entry for `Vehicle.Cabin.Infotainment.Navigation.Volume` to send integer values 0 and 100 via Kuksa.
 
 
-## Build mqtt_reader container
+## Build mqtt_reader image
 ```
 sudo su
 cd mqtt_reader

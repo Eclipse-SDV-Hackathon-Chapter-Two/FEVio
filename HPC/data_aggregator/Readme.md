@@ -8,7 +8,8 @@ python3 data_aggregator.py
 ```
 
 # Dependencies
+The following Python dependencies are used in the data aggregator:
+
 ```
-socketio
-kuksa_client
+pip3 install socketio kuksa_client
 ```
