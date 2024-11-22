@@ -20,9 +20,7 @@ workloads:
             filterMask:
               - "desiredState"
               - "workloadStates"
-apiVersion: v0.1
-workloads:
-  Data_Aggregator:
+  Pong:
     runtime: podman
     agent: agent_A
     restart: true
